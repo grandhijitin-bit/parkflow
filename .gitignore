@@ -1,0 +1,28 @@
+# Compiled Java Class Files
+*.class
+target/
+bin/
+
+# Temporary / Build Artefacts
+*.log
+sources.txt
+test-sources.txt
+
+# Local Database (recreated on first launch)
+# parking_system.db
+
+# Node.js
+node_modules/
+package-lock.json
+
+# IDE and OS Files
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Office Temporary Lock Files
+~$*.docx
+~$*.pptx
