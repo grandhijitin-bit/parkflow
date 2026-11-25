@@ -6,18 +6,24 @@
   <title>ParkFlow — Vehicle Parking Management System</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #0B0F19;
       --card-bg: #111827;
-      --card-border: #1F2937;
+      --card-inner: #1a2234;
+      --border: #1F2937;
+      --border-light: #374151;
       --accent-cyan: #38BDF8;
       --accent-blue: #2563EB;
       --accent-green: #10B981;
+      --accent-green-bg: rgba(16, 185, 129, 0.12);
       --accent-red: #EF4444;
+      --accent-red-bg: rgba(239, 68, 68, 0.12);
+      --accent-amber: #F59E0B;
       --text-main: #F3F4F6;
       --text-muted: #9CA3AF;
+      --font-mono: 'JetBrains Mono', monospace;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -25,454 +31,1259 @@
       color: var(--text-main);
       font-family: 'Plus Jakarta Sans', sans-serif;
       line-height: 1.6;
-      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
+
+    /* Header & Navigation */
     header {
-      background: rgba(17, 24, 39, 0.85);
+      background: rgba(17, 24, 39, 0.95);
       backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--card-border);
+      border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 100;
-      padding: 1rem 2rem;
+      padding: 0.85rem 1.5rem;
     }
-    .nav-container {
-      max-width: 1200px;
+    .header-inner {
+      max-width: 1280px;
       margin: 0 auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
     }
-    .logo {
+    .brand {
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      font-weight: 800;
-      font-size: 1.3rem;
-      letter-spacing: -0.5px;
     }
-    .logo-badge {
+    .brand-icon {
       background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
       color: white;
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 900;
+      font-weight: 800;
+      font-size: 1.25rem;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
     }
-    .nav-links a {
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .brand-title span { color: var(--accent-cyan); }
+    .brand-sub { font-size: 0.72rem; color: var(--text-muted); }
+
+    .nav-tabs {
+      display: flex;
+      gap: 0.35rem;
+      background: #0f1523;
+      padding: 0.3rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
       color: var(--text-muted);
-      text-decoration: none;
-      margin-left: 1.5rem;
-      font-size: 0.95rem;
-      font-weight: 500;
-      transition: color 0.2s;
-    }
-    .nav-links a:hover { color: var(--accent-cyan); }
-    .btn-github {
-      background: #1F2937;
-      border: 1px solid #374151;
-      color: white;
       padding: 0.5rem 1rem;
       border-radius: 8px;
-      text-decoration: none;
+      font-size: 0.88rem;
       font-weight: 600;
-      font-size: 0.9rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .hero {
-      max-width: 1200px;
-      margin: 4rem auto 2rem;
-      padding: 0 2rem;
-      text-align: center;
-    }
-    .pill {
-      display: inline-block;
-      background: rgba(56, 189, 248, 0.1);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      color: var(--accent-cyan);
-      padding: 0.35rem 1rem;
-      border-radius: 9999px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-bottom: 1.5rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .hero h1 {
-      font-size: 3.2rem;
-      font-weight: 800;
-      line-height: 1.15;
-      margin-bottom: 1.25rem;
-      background: linear-gradient(to right, #FFFFFF, #93C5FD);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .hero p {
-      font-size: 1.15rem;
-      color: var(--text-muted);
-      max-width: 780px;
-      margin: 0 auto 2.5rem;
-    }
-    .hero-cta {
+      cursor: pointer;
+      transition: all 0.2s ease;
       display: flex;
-      justify-content: center;
-      gap: 1rem;
-      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.4rem;
     }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent-blue), #1D4ED8);
+    .tab-btn:hover { color: var(--text-main); background: rgba(255,255,255,0.04); }
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--accent-blue), #1d4ed8);
       color: white;
-      padding: 0.85rem 1.8rem;
-      border-radius: 10px;
-      text-decoration: none;
-      font-weight: 700;
-      box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
-      transition: transform 0.2s;
+      box-shadow: 0 2px 8px rgba(37,99,235,0.3);
     }
-    .btn-primary:hover { transform: translateY(-2px); }
-    .btn-secondary {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      color: var(--text-main);
-      padding: 0.85rem 1.8rem;
-      border-radius: 10px;
-      text-decoration: none;
-      font-weight: 600;
+
+    /* Main Container */
+    main {
+      flex: 1;
+      max-width: 1280px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem;
     }
-    .metrics {
+
+    /* Live Stat Bar */
+    .metrics-bar {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.5rem;
-      max-width: 1200px;
-      margin: 3rem auto;
-      padding: 0 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
     }
     .metric-card {
       background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      padding: 1.5rem;
+      border: 1px solid var(--border);
       border-radius: 12px;
-      text-align: center;
-    }
-    .metric-val {
-      font-size: 2.2rem;
-      font-weight: 800;
-      color: var(--accent-cyan);
-    }
-    .metric-label {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      margin-top: 0.25rem;
-    }
-    .section {
-      max-width: 1200px;
-      margin: 5rem auto;
-      padding: 0 2rem;
-    }
-    .section-title {
-      font-size: 2rem;
-      font-weight: 800;
-      margin-bottom: 0.5rem;
-    }
-    .section-subtitle {
-      color: var(--text-muted);
-      margin-bottom: 2.5rem;
-    }
-    /* Interactive slot matrix */
-    .slot-matrix {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
       gap: 1rem;
-      margin-top: 1.5rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.15);
     }
-    .slot-box {
-      background: #111827;
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      border-radius: 8px;
-      padding: 1rem;
-      text-align: center;
-      transition: all 0.2s;
-      cursor: pointer;
+    .metric-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
     }
-    .slot-box:hover {
-      border-color: var(--accent-cyan);
-      transform: translateY(-2px);
+    .metric-icon.blue { background: rgba(56, 189, 248, 0.15); color: var(--accent-cyan); }
+    .metric-icon.red { background: var(--accent-red-bg); color: var(--accent-red); }
+    .metric-icon.green { background: var(--accent-green-bg); color: var(--accent-green); }
+    .metric-icon.amber { background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); }
+    .metric-value { font-size: 1.5rem; font-weight: 800; font-family: var(--font-mono); line-height: 1.1; }
+    .metric-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+
+    /* Tab Panes */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.25s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Forms & Interactive Sections */
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
     }
-    .slot-box.occupied {
-      border-color: rgba(239, 68, 68, 0.4);
-      background: rgba(239, 68, 68, 0.05);
+    @media (max-width: 900px) {
+      .grid-2col { grid-template-columns: 1fr; }
     }
-    .slot-id {
-      font-family: 'JetBrains Mono', monospace;
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .card-title {
+      font-size: 1.15rem;
       font-weight: 700;
-      font-size: 1.1rem;
+      margin-bottom: 0.35rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
-    .slot-type {
-      font-size: 0.75rem;
+    .card-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; }
+
+    .form-group {
+      margin-bottom: 1.15rem;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .form-input, .form-select {
+      width: 100%;
+      background: var(--card-inner);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus, .form-select:focus {
+      border-color: var(--accent-cyan);
+    }
+    .form-input.plate-input {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-size: 1.05rem;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, var(--accent-blue), #1d4ed8);
+      color: white;
+      border: none;
+      padding: 0.85rem 1.5rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+    }
+    .btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
+    .btn.btn-danger {
+      background: linear-gradient(135deg, var(--accent-red), #b91c1c);
+      box-shadow: 0 4px 12px rgba(239,68,68,0.3);
+    }
+    .btn.btn-outline {
+      background: transparent;
+      border: 1px solid var(--border-light);
+      color: var(--text-main);
+      box-shadow: none;
+    }
+    .btn.btn-outline:hover { background: rgba(255,255,255,0.05); }
+
+    /* Ticket Box */
+    .ticket-display {
+      background: linear-gradient(145deg, #0d1627, #131f37);
+      border: 2px dashed var(--accent-cyan);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-top: 1.25rem;
+      display: none;
+      position: relative;
+    }
+    .ticket-header {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.25);
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.8rem;
+      color: var(--accent-cyan);
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .ticket-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      font-size: 0.88rem;
+    }
+    .ticket-cell label { color: var(--text-muted); font-size: 0.72rem; display: block; text-transform: uppercase; }
+    .ticket-cell span { font-weight: 700; font-family: var(--font-mono); color: white; }
+
+    /* 30 Slot Matrix Grid */
+    .slot-section-title {
+      font-size: 0.85rem;
+      font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
-      margin-top: 0.2rem;
+      letter-spacing: 1px;
+      margin: 1rem 0 0.5rem;
+      display: flex;
+      justify-content: space-between;
     }
-    .slot-status {
-      display: inline-block;
-      margin-top: 0.5rem;
-      font-size: 0.75rem;
+    .slot-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .slot-box {
+      background: var(--card-inner);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem;
+      text-align: center;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    .slot-box:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-light);
+    }
+    .slot-box.available {
+      border-color: rgba(16, 185, 129, 0.4);
+      background: rgba(16, 185, 129, 0.04);
+    }
+    .slot-box.occupied {
+      border-color: rgba(239, 68, 68, 0.5);
+      background: rgba(239, 68, 68, 0.08);
+    }
+    .slot-id {
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+    }
+    .slot-type {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      margin: 0.15rem 0;
+    }
+    .slot-badge {
+      font-size: 0.68rem;
       font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      display: inline-block;
+    }
+    .slot-box.available .slot-badge {
+      background: var(--accent-green-bg);
       color: var(--accent-green);
     }
-    .slot-box.occupied .slot-status { color: var(--accent-red); }
-    /* Screenshots gallery */
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 2rem;
+    .slot-box.occupied .slot-badge {
+      background: var(--accent-red-bg);
+      color: var(--accent-red);
     }
-    .gallery-card {
+    .slot-plate {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--accent-cyan);
+      margin-top: 0.35rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* History / Audit Table */
+    .table-container {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
       background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+    th {
+      background: #0f1523;
+      padding: 0.85rem 1rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-main);
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    .mono-cell { font-family: var(--font-mono); font-size: 0.82rem; }
+    .status-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 20px;
+      display: inline-block;
+    }
+    .status-pill.parked { background: var(--accent-red-bg); color: var(--accent-red); }
+    .status-pill.completed { background: var(--accent-green-bg); color: var(--accent-green); }
+
+    /* Modal Receipt */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 1rem;
+    }
+    .modal-backdrop.active { display: flex; animation: fadeIn 0.2s ease; }
+    .receipt-box {
+      background: #0e1626;
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
       overflow: hidden;
     }
-    .gallery-card img {
-      width: 100%;
-      height: 240px;
-      object-fit: cover;
-      object-position: top;
-      display: block;
-      border-bottom: 1px solid var(--card-border);
+    .receipt-header {
+      background: linear-gradient(135deg, var(--accent-blue), #1e3a8a);
+      padding: 1.25rem 1.5rem;
+      text-align: center;
+      color: white;
     }
-    .gallery-card-body {
-      padding: 1.25rem;
+    .receipt-header h3 { font-size: 1.25rem; font-weight: 800; margin-bottom: 0.25rem; }
+    .receipt-header p { font-size: 0.78rem; opacity: 0.85; }
+    .receipt-body { padding: 1.5rem; }
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+      font-size: 0.88rem;
     }
-    .gallery-card-title {
-      font-weight: 700;
-      font-size: 1.05rem;
-      margin-bottom: 0.35rem;
+    .receipt-row.total {
+      border-top: 2px dashed var(--border-light);
+      margin-top: 1rem;
+      padding-top: 1rem;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--accent-green);
     }
-    .gallery-card-desc {
-      font-size: 0.85rem;
-      color: var(--text-muted);
+    .receipt-row label { color: var(--text-muted); }
+    .receipt-row span { font-weight: 600; font-family: var(--font-mono); }
+    .receipt-cap-notice {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #fbbf24;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      margin-bottom: 1rem;
+      text-align: center;
     }
-    /* Team */
+    .receipt-footer {
+      padding: 1rem 1.5rem 1.25rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    /* Team & Info Cards */
     .team-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.5rem;
+      gap: 1rem;
+      margin-top: 1rem;
     }
     .team-card {
       background: var(--card-bg);
-      border: 1px solid var(--card-border);
+      border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 1.5rem;
-      text-align: center;
+      padding: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
     .team-avatar {
-      width: 64px;
-      height: 64px;
-      background: #1F2937;
-      border: 2px solid var(--accent-cyan);
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
-      margin: 0 auto 1rem;
+      background: linear-gradient(135deg, #1e3a8a, var(--accent-cyan));
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 800;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       color: white;
     }
-    .team-name { font-weight: 700; font-size: 1.05rem; }
-    .team-id { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--accent-cyan); margin: 0.2rem 0; }
-    .team-role { font-size: 0.85rem; color: var(--text-muted); }
+    .team-name { font-weight: 700; font-size: 0.95rem; }
+    .team-id { font-size: 0.75rem; color: var(--accent-cyan); font-family: var(--font-mono); }
+    .team-role { font-size: 0.75rem; color: var(--text-muted); }
+
+    /* Footer */
     footer {
-      border-top: 1px solid var(--card-border);
-      padding: 2.5rem 2rem;
+      background: #080c14;
+      border-top: 1px solid var(--border);
+      padding: 1.5rem;
       text-align: center;
+      font-size: 0.8rem;
       color: var(--text-muted);
-      font-size: 0.9rem;
-      margin-top: 4rem;
+      margin-top: 2rem;
     }
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-cyan);
+    }
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: #111827;
+      border: 1px solid var(--accent-cyan);
+      color: white;
+      padding: 0.85rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      display: none;
+      z-index: 999;
+    }
+    .toast.show { display: block; animation: fadeIn 0.2s ease; }
   </style>
 </head>
 <body>
 
-  <!-- Navigation -->
+  <!-- Top Header Navigation -->
   <header>
-    <div class="nav-container">
-      <div class="logo">
-        <div class="logo-badge">P</div>
-        <span>ParkFlow</span>
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-icon">P</div>
+        <div>
+          <div class="brand-title">Park<span>Flow</span> <span class="badge">v2.0 Web Live</span></div>
+          <div class="brand-sub">CSE 213 Advanced Java Parking System Simulator</div>
+        </div>
       </div>
-      <nav class="nav-links">
-        <a href="#features">Features</a>
-        <a href="#matrix">Slot Matrix</a>
-        <a href="#screens">Screenshots</a>
-        <a href="#team">Team</a>
-        <a href="https://github.com/grandhijitin-bit/parkflow" target="_blank" class="btn-github">
-          <svg height="18" width="18" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-          </svg>
-          GitHub
-        </a>
+
+      <nav class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('dashboard')">📊 Dashboard & Slots</button>
+        <button class="tab-btn" onclick="switchTab('park')">🚗 Park Vehicle</button>
+        <button class="tab-btn" onclick="switchTab('exit')">💳 Exit & Billing</button>
+        <button class="tab-btn" onclick="switchTab('history')">📜 History Stream</button>
+        <button class="tab-btn" onclick="switchTab('about')">ℹ️ Capstone Info</button>
       </nav>
     </div>
   </header>
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="pill">CSE 213 · Advanced Java Programming · Capstone</div>
-    <h1>Automated Vehicle Parking<br>Management System</h1>
-    <p>A high-performance standalone Java application built with Java Swing, SQLite via JDBC, deterministic ceiling billing, and resilient multithreaded auto-save architecture.</p>
-    <div class="hero-cta">
-      <a href="https://github.com/grandhijitin-bit/parkflow/archive/refs/heads/main.zip" class="btn-primary">Download Project (ZIP)</a>
-      <a href="#matrix" class="btn-secondary">View Live Slot Matrix</a>
+  <main>
+    <!-- Live Real-Time Stat Counter -->
+    <div class="metrics-bar">
+      <div class="metric-card">
+        <div class="metric-icon blue">🅿️</div>
+        <div>
+          <div class="metric-value" id="statCapacity">30</div>
+          <div class="metric-label">Total Capacity</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon red">🚗</div>
+        <div>
+          <div class="metric-value" id="statOccupied">1</div>
+          <div class="metric-label">Slots Occupied</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon green">✅</div>
+        <div>
+          <div class="metric-value" id="statAvailable">29</div>
+          <div class="metric-label">Available Slots</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon amber">₹</div>
+        <div>
+          <div class="metric-value" id="statRevenue">₹0.00</div>
+          <div class="metric-label">Revenue Collected</div>
+        </div>
+      </div>
     </div>
-  </section>
 
-  <!-- Metrics -->
-  <div class="metrics">
-    <div class="metric-card">
-      <div class="metric-val">30</div>
-      <div class="metric-label">Total Parking Slots</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-val">₹50/hr</div>
-      <div class="metric-label">Fixed Ceiling Tariff</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-val">O(1)</div>
-      <div class="metric-label">Active Vehicle Retrieval</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-val">100%</div>
-      <div class="metric-label">Automated Tests Passed (11/11)</div>
+    <!-- TAB 1: DASHBOARD & MATRIX -->
+    <section id="tab-dashboard" class="tab-content active">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:1rem;">
+          <div>
+            <h2 class="card-title">Live 30-Slot Parking Matrix</h2>
+            <p class="card-desc">Visual grid mirroring the Java Swing system state with 10 Bike, 15 Car, and 5 Truck bays.</p>
+          </div>
+          <div style="display:flex; gap:0.5rem;">
+            <button class="btn btn-outline" style="width:auto; padding:0.4rem 0.8rem; font-size:0.8rem;" onclick="quickParkModal()">+ Quick Park</button>
+            <button class="btn btn-outline" style="width:auto; padding:0.4rem 0.8rem; font-size:0.8rem;" onclick="resetDemoData()">↺ Reset Demo</button>
+          </div>
+        </div>
+
+        <div class="slot-section-title">
+          <span>🛵 Two-Wheeler / Bike Bays (Slots B-01 to B-10 · Rate: ₹10/hr)</span>
+          <span id="bikeAvailCount" style="color:var(--accent-green);">10 Avail</span>
+        </div>
+        <div class="slot-grid" id="gridBikes"></div>
+
+        <div class="slot-section-title">
+          <span>🚙 Four-Wheeler / Car Bays (Slots C-01 to C-15 · Rate: ₹20/hr)</span>
+          <span id="carAvailCount" style="color:var(--accent-green);">14 Avail</span>
+        </div>
+        <div class="slot-grid" id="gridCars"></div>
+
+        <div class="slot-section-title">
+          <span>🚚 Heavy Transport / Truck Bays (Slots T-01 to T-05 · Rate: ₹30/hr)</span>
+          <span id="truckAvailCount" style="color:var(--accent-green);">5 Avail</span>
+        </div>
+        <div class="slot-grid" id="gridTrucks"></div>
+      </div>
+    </section>
+
+    <!-- TAB 2: PARK VEHICLE (CHECK-IN) -->
+    <section id="tab-park" class="tab-content">
+      <div class="grid-2col">
+        <div class="card">
+          <h2 class="card-title">🚗 Vehicle Check-In & Entry</h2>
+          <p class="card-desc">Simulates the Java Swing "Park Vehicle" dialog with real-time slot allocation and duplicate checking.</p>
+
+          <form id="parkForm" onsubmit="handleParkVehicle(event)">
+            <div class="form-group">
+              <label class="form-label">Vehicle Registration Number</label>
+              <input type="text" id="parkPlate" class="form-input plate-input" placeholder="e.g. AP 39 AB 1234" required autofocus>
+              <span style="font-size:0.75rem; color:var(--text-muted); margin-top:0.25rem; display:block;">Standard Indian RTO license plate format</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Vehicle Category</label>
+              <select id="parkType" class="form-select" onchange="updateSuggestedSlot()">
+                <option value="CAR">Car / Four Wheeler (₹20/hr)</option>
+                <option value="BIKE">Motorcycle / Two Wheeler (₹10/hr)</option>
+                <option value="TRUCK">Heavy Vehicle / Truck (₹30/hr)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Auto-Allocated Available Slot</label>
+              <input type="text" id="parkSlot" class="form-input" style="font-family:var(--font-mono); font-weight:700; color:var(--accent-cyan);" readonly>
+            </div>
+
+            <button type="submit" class="btn">🅿️ Confirm & Issue Parking Ticket</button>
+          </form>
+        </div>
+
+        <div>
+          <div class="card">
+            <h2 class="card-title">🎫 Generated Parking Ticket</h2>
+            <p class="card-desc">Official check-in ticket issued with cryptographic hash ID.</p>
+            <div id="noTicketMsg" style="text-align:center; padding:2.5rem 1rem; color:var(--text-muted); font-size:0.9rem;">
+              Fill the form and click <strong>Issue Parking Ticket</strong> to generate a digital pass.
+            </div>
+
+            <div id="ticketDisplay" class="ticket-display">
+              <div class="ticket-header">
+                <span>PARKFLOW OFFICIAL TICKET</span>
+                <span id="ticketId">#PKF-0000</span>
+              </div>
+              <div class="ticket-grid">
+                <div class="ticket-cell">
+                  <label>Plate Number</label>
+                  <span id="tPlate">-</span>
+                </div>
+                <div class="ticket-cell">
+                  <label>Assigned Slot</label>
+                  <span id="tSlot" style="color:var(--accent-cyan);">-</span>
+                </div>
+                <div class="ticket-cell">
+                  <label>Vehicle Type</label>
+                  <span id="tType">-</span>
+                </div>
+                <div class="ticket-cell">
+                  <label>Base Tariff</label>
+                  <span id="tRate">-</span>
+                </div>
+                <div class="ticket-cell" style="grid-column: span 2;">
+                  <label>Check-In Timestamp</label>
+                  <span id="tTime" style="font-size:0.78rem;">-</span>
+                </div>
+              </div>
+              <div style="margin-top:1rem; text-align:center; font-size:0.75rem; color:var(--text-muted); border-top:1px solid rgba(255,255,255,0.08); padding-top:0.75rem;">
+                Present this digital ticket or vehicle plate number at the exit kiosk.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: EXIT VEHICLE & BILLING -->
+    <section id="tab-exit" class="tab-content">
+      <div class="grid-2col">
+        <div class="card">
+          <h2 class="card-title">💳 Vehicle Check-Out & Exit</h2>
+          <p class="card-desc">Select a parked vehicle, simulate parking duration, and compute billing using the ₹50 Daily Ceiling rule.</p>
+
+          <form id="exitForm" onsubmit="handleExitVehicle(event)">
+            <div class="form-group">
+              <label class="form-label">Select Active Parked Vehicle</label>
+              <select id="exitVehicleSelect" class="form-select" onchange="syncExitForm()">
+                <option value="">-- Choose Parked Vehicle --</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Simulate Parking Duration</label>
+              <select id="exitDuration" class="form-select">
+                <option value="1">1 Hour (Standard Rate)</option>
+                <option value="2">2 Hours (Standard Rate)</option>
+                <option value="3" selected>3 Hours (Test Cap / Discount)</option>
+                <option value="5">5 Hours (Hit ₹50 Daily Ceiling Rule)</option>
+                <option value="12">12 Hours (Hit ₹50 Daily Ceiling Rule)</option>
+                <option value="24">24 Hours (Full Day Cap)</option>
+              </select>
+              <span style="font-size:0.75rem; color:var(--accent-amber); margin-top:0.25rem; display:block;">
+                💡 <em>Project Rule: Maximum daily parking fee is capped at exactly ₹50 regardless of total hours!</em>
+              </span>
+            </div>
+
+            <button type="submit" class="btn btn-danger">💳 Process Payment & Release Slot</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">📋 Tariff Matrix & Rules</h2>
+          <p class="card-desc">Advanced Java OOP Billing Engine calculation logic.</p>
+          <div style="font-size:0.85rem; line-height:1.8; color:var(--text-muted);">
+            <div style="display:flex; justify-content:space-between; padding:0.4rem 0; border-bottom:1px solid var(--border);">
+              <span>🛵 Two Wheeler (Bike)</span>
+              <strong style="color:var(--text-main);">₹10.00 / hr</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:0.4rem 0; border-bottom:1px solid var(--border);">
+              <span>🚙 Four Wheeler (Car)</span>
+              <strong style="color:var(--text-main);">₹20.00 / hr</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:0.4rem 0; border-bottom:1px solid var(--border);">
+              <span>🚚 Heavy Transport (Truck)</span>
+              <strong style="color:var(--text-main);">₹30.00 / hr</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:0.4rem 0; border-bottom:1px solid var(--border);">
+              <span style="color:var(--accent-cyan);">🛡️ Daily Maximum Ceiling</span>
+              <strong style="color:var(--accent-cyan);">₹50.00 Max Cap</strong>
+            </div>
+          </div>
+          <div style="margin-top:1.5rem; background:rgba(56,189,248,0.06); border:1px solid rgba(56,189,248,0.2); padding:0.85rem; border-radius:8px; font-size:0.8rem;">
+            <strong>Automated Grace Period:</strong> First 15 minutes of short drop-offs are processed under minimal base billing. The daemon autosaves every transaction into SQLite JDBC storage.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: HISTORY & AUDIT STREAM -->
+    <section id="tab-history" class="tab-content">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1rem;">
+          <div>
+            <h2 class="card-title">📜 Parking Audit Stream</h2>
+            <p class="card-desc">Interactive transaction ledger mimicking the Java Streams filter & reduction pipeline.</p>
+          </div>
+          <div>
+            <input type="text" id="historyFilter" class="form-input" placeholder="🔍 Search vehicle / slot..." oninput="renderHistoryTable()" style="padding:0.45rem 0.85rem; font-size:0.85rem; width:220px;">
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Ticket ID</th>
+                <th>Plate Number</th>
+                <th>Type</th>
+                <th>Slot</th>
+                <th>Entry Time</th>
+                <th>Exit Time</th>
+                <th>Duration</th>
+                <th>Fee Paid</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: CAPSTONE INFO -->
+    <section id="tab-about" class="tab-content">
+      <div class="card" style="margin-bottom:1.5rem;">
+        <h2 class="card-title">Vehicle Parking Management System (ParkFlow)</h2>
+        <p class="card-desc">Capstone Project for CSE 213 (Advanced Java Programming) · Department of Computer Science & Engineering, SRM University – AP</p>
+        <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">
+          Under the expert guidance and supervision of <strong>Dr. Prakash Ankur</strong>, our team engineered a high-performance multithreaded parking management architecture adhering strictly to SOLID and clean-code design paradigms.
+        </p>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; margin-top:1rem;">
+          <div style="background:var(--card-inner); padding:1rem; border-radius:8px; border:1px solid var(--border);">
+            <div style="color:var(--accent-cyan); font-weight:700; font-size:0.9rem;">Multi-tier Concurrency</div>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-top:0.25rem;">Thread-safe slot allocations guarded by ConcurrentHashMap and daemon threads.</div>
+          </div>
+          <div style="background:var(--card-inner); padding:1rem; border-radius:8px; border:1px solid var(--border);">
+            <div style="color:var(--accent-green); font-weight:700; font-size:0.9rem;">SQLite JDBC Persistence</div>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-top:0.25rem;">ACID compliant transactional checkpoints with zero external server dependencies.</div>
+          </div>
+          <div style="background:var(--card-inner); padding:1rem; border-radius:8px; border:1px solid var(--border);">
+            <div style="color:var(--accent-amber); font-weight:700; font-size:0.9rem;">Comprehensive Test Suite</div>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-top:0.25rem;">11 automated test suites validating boundary limits, rate caps, and thread safety.</div>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:0.75rem;">Capstone Engineering Team</h3>
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-avatar">CP</div>
+          <div>
+            <div class="team-name">Chandrala Rishit Prem</div>
+            <div class="team-id">AP25110011030</div>
+            <div class="team-role">Application Bootstrap, GUI & Dashboard</div>
+          </div>
+        </div>
+
+        <div class="team-card">
+          <div class="team-avatar">HK</div>
+          <div>
+            <div class="team-name">M. Hiranya Kumar</div>
+            <div class="team-id">AP25110011019</div>
+            <div class="team-role">Database Schema & SQLite JDBC</div>
+          </div>
+        </div>
+
+        <div class="team-card">
+          <div class="team-avatar">KK</div>
+          <div>
+            <div class="team-name">K. Komal</div>
+            <div class="team-id">AP25110011040</div>
+            <div class="team-role">Billing Engine & Custom Exceptions</div>
+          </div>
+        </div>
+
+        <div class="team-card">
+          <div class="team-avatar">GJ</div>
+          <div>
+            <div class="team-name">G.V.N.S.S. Jitin</div>
+            <div class="team-id">AP25110010958</div>
+            <div class="team-role">AutoSave Daemon & Concurrency Testing</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL TAX INVOICE RECEIPT -->
+  <div id="receiptModal" class="modal-backdrop">
+    <div class="receipt-box">
+      <div class="receipt-header">
+        <h3>PARKFLOW TAX INVOICE</h3>
+        <p>SRM University – AP Parking Facility</p>
+      </div>
+      <div class="receipt-body">
+        <div id="receiptCapAlert" class="receipt-cap-notice" style="display:none;">
+          ★ <strong>₹50 Daily Maximum Cap Applied</strong> (Discount Granted)
+        </div>
+
+        <div class="receipt-row">
+          <label>Invoice Number:</label>
+          <span id="rInvoice">INV-2026-001</span>
+        </div>
+        <div class="receipt-row">
+          <label>Vehicle Number:</label>
+          <span id="rPlate">AP 16 CK 9999</span>
+        </div>
+        <div class="receipt-row">
+          <label>Vehicle Category:</label>
+          <span id="rType">CAR</span>
+        </div>
+        <div class="receipt-row">
+          <label>Parking Slot:</label>
+          <span id="rSlot">C-01</span>
+        </div>
+        <div class="receipt-row">
+          <label>Entry Timestamp:</label>
+          <span id="rEntry">2026-11-25 09:30</span>
+        </div>
+        <div class="receipt-row">
+          <label>Exit Timestamp:</label>
+          <span id="rExit">2026-11-25 12:30</span>
+        </div>
+        <div class="receipt-row">
+          <label>Total Duration:</label>
+          <span id="rDuration">3 Hours</span>
+        </div>
+        <div class="receipt-row">
+          <label>Standard Tariff:</label>
+          <span id="rRaw">₹60.00</span>
+        </div>
+        <div class="receipt-row total">
+          <span>Net Amount Paid:</span>
+          <span id="rTotal">₹50.00</span>
+        </div>
+      </div>
+      <div class="receipt-footer">
+        <button class="btn btn-outline" onclick="closeReceiptModal()">Close</button>
+        <button class="btn" onclick="printReceipt()">🖨️ Print Receipt</button>
+      </div>
     </div>
   </div>
 
-  <!-- Interactive 30-Slot Matrix Preview -->
-  <section id="matrix" class="section">
-    <h2 class="section-title">Facility Slot Allocation Matrix</h2>
-    <p class="section-subtitle">Real-time category breakdown (10 Bike slots, 15 Car slots, 5 Truck slots).</p>
-    
-    <div class="slot-matrix" id="slotMatrix"></div>
-  </section>
-
-  <!-- Screenshots Gallery -->
-  <section id="screens" class="section">
-    <h2 class="section-title">Application Interface Screenshots</h2>
-    <p class="section-subtitle">Actual captures of ParkFlow running on the Java Swing desktop framework.</p>
-
-    <div class="gallery-grid">
-      <div class="gallery-card">
-        <img src="screenshots/dashboard.png" alt="Dashboard">
-        <div class="gallery-card-body">
-          <div class="gallery-card-title">Figure 3.1: Real-Time Dashboard</div>
-          <div class="gallery-card-desc">6 live statistics cards, real-time clock, and 30-slot interactive visual matrix.</div>
-        </div>
-      </div>
-
-      <div class="gallery-card">
-        <img src="screenshots/park_vehicle.png" alt="Park Vehicle">
-        <div class="gallery-card-body">
-          <div class="gallery-card-title">Figure 3.2: Vehicle Check-In</div>
-          <div class="gallery-card-desc">Automated slot allocation, license plate regex validation, and digital ticket issuance.</div>
-        </div>
-      </div>
-
-      <div class="gallery-card">
-        <img src="screenshots/exit_vehicle.png" alt="Exit Vehicle">
-        <div class="gallery-card-body">
-          <div class="gallery-card-title">Figure 3.3: Exit & Billing Calculation</div>
-          <div class="gallery-card-desc">Instant vehicle lookup and deterministic ₹50 ceiling tariff calculation.</div>
-        </div>
-      </div>
-
-      <div class="gallery-card">
-        <img src="screenshots/receipt_dialog.png" alt="Receipt Dialog">
-        <div class="gallery-card-body">
-          <div class="gallery-card-title">Figure 3.4: Official Invoice Receipt</div>
-          <div class="gallery-card-desc">Professional modal invoice receipt detailing entry/exit times and total payment collected.</div>
-        </div>
-      </div>
-
-      <div class="gallery-card">
-        <img src="screenshots/parking_history.png" alt="Parking History">
-        <div class="gallery-card-body">
-          <div class="gallery-card-title">Figure 3.5: History & Audit Stream</div>
-          <div class="gallery-card-desc">Multi-criteria filtering and dynamic revenue reduction powered by Java Streams.</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Team -->
-  <section id="team" class="section">
-    <h2 class="section-title">Capstone Engineering Team</h2>
-    <p class="section-subtitle">Department of Computer Science & Engineering · SRM University – AP<br>Supervised by <strong>Dr. Prakash Ankur</strong></p>
-
-    <div class="team-grid">
-      <div class="team-card">
-        <div class="team-avatar">CP</div>
-        <div class="team-name">Chandrala Rishit Prem</div>
-        <div class="team-id">AP25110011030</div>
-        <div class="team-role">Application Bootstrap, GUI & Dashboard</div>
-      </div>
-
-      <div class="team-card">
-        <div class="team-avatar">HK</div>
-        <div class="team-name">M. Hiranya Kumar</div>
-        <div class="team-id">AP25110011019</div>
-        <div class="team-role">Database Schema & SQLite JDBC</div>
-      </div>
-
-      <div class="team-card">
-        <div class="team-avatar">KK</div>
-        <div class="team-name">K. Komal</div>
-        <div class="team-id">AP25110011040</div>
-        <div class="team-role">Billing Engine & Custom Exceptions</div>
-      </div>
-
-      <div class="team-card">
-        <div class="team-avatar">GJ</div>
-        <div class="team-name">G.V.N.S.S. Jitin</div>
-        <div class="team-id">AP25110010958</div>
-        <div class="team-role">AutoSave Daemon & Concurrency Testing</div>
-      </div>
-    </div>
-  </section>
+  <div id="toast" class="toast">Operation successful!</div>
 
   <!-- Footer -->
   <footer>
-    <p>© 2026 ParkFlow · SRM University – AP · Built for CSE 213 (Advanced Java Programming)</p>
+    <p>© 2026 ParkFlow · SRM University – AP · Department of Computer Science & Engineering · Supervised by Dr. Prakash Ankur</p>
   </footer>
 
   <script>
-    // Generate 30 slots matrix
-    const matrix = document.getElementById('slotMatrix');
-    const slots = [];
-    for (let i = 1; i <= 10; i++) slots.push({ id: `B-${String(i).padStart(2,'0')}`, type: 'Bike', occ: false });
-    for (let i = 1; i <= 15; i++) slots.push({ id: `C-${String(i).padStart(2,'0')}`, type: 'Car', occ: i === 1 }); // C-01 occupied
-    for (let i = 1; i <= 5; i++) slots.push({ id: `T-${String(i).padStart(2,'0')}`, type: 'Truck', occ: false });
+    // System State Setup
+    const RATES = { BIKE: 10, CAR: 20, TRUCK: 30 };
+    const DAILY_CAP = 50.00;
 
-    slots.forEach(s => {
-      const el = document.createElement('div');
-      el.className = `slot-box ${s.occ ? 'occupied' : ''}`;
-      el.innerHTML = `
-        <div class="slot-id">${s.id}</div>
-        <div class="slot-type">${s.type}</div>
-        <div class="slot-status">${s.occ ? 'OCCUPIED' : 'AVAILABLE'}</div>
-      `;
-      el.addEventListener('click', () => {
-        s.occ = !s.occ;
-        el.className = `slot-box ${s.occ ? 'occupied' : ''}`;
-        el.querySelector('.slot-status').textContent = s.occ ? 'OCCUPIED' : 'AVAILABLE';
+    let slots = [];
+    let transactions = [];
+    let totalRevenue = 0.0;
+
+    function initData() {
+      const savedSlots = localStorage.getItem('parkflow_slots');
+      const savedTrans = localStorage.getItem('parkflow_trans');
+      const savedRev = localStorage.getItem('parkflow_rev');
+
+      if (savedSlots && savedTrans) {
+        slots = JSON.parse(savedSlots);
+        transactions = JSON.parse(savedTrans);
+        totalRevenue = parseFloat(savedRev || 0);
+      } else {
+        resetDemoData();
+      }
+    }
+
+    function resetDemoData() {
+      slots = [];
+      for (let i = 1; i <= 10; i++) slots.push({ id: `B-${String(i).padStart(2,'0')}`, type: 'BIKE', occupied: false, plate: null, ticketId: null, inTime: null });
+      for (let i = 1; i <= 15; i++) slots.push({ id: `C-${String(i).padStart(2,'0')}`, type: 'CAR', occupied: false, plate: null, ticketId: null, inTime: null });
+      for (let i = 1; i <= 5; i++) slots.push({ id: `T-${String(i).padStart(2,'0')}`, type: 'TRUCK', occupied: false, plate: null, ticketId: null, inTime: null });
+
+      // Default sample vehicle from screenshot
+      slots[10].occupied = true;
+      slots[10].plate = 'AP 16 CK 9999';
+      slots[10].ticketId = 'PKF-1001';
+      slots[10].inTime = new Date(Date.now() - 3 * 3600 * 1000).toLocaleString();
+
+      transactions = [
+        {
+          ticketId: 'PKF-1001',
+          plate: 'AP 16 CK 9999',
+          type: 'CAR',
+          slot: 'C-01',
+          inTime: slots[10].inTime,
+          outTime: null,
+          duration: null,
+          fee: null,
+          status: 'PARKED'
+        }
+      ];
+
+      totalRevenue = 0.0;
+      saveData();
+      renderAll();
+      showToast('Demo data initialized with 1 active car in slot C-01.');
+    }
+
+    function saveData() {
+      localStorage.setItem('parkflow_slots', JSON.stringify(slots));
+      localStorage.setItem('parkflow_trans', JSON.stringify(transactions));
+      localStorage.setItem('parkflow_rev', totalRevenue.toFixed(2));
+    }
+
+    // Tab Navigation
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+      const target = document.getElementById(`tab-${tabId}`);
+      if (target) target.classList.add('active');
+
+      const btns = Array.from(document.querySelectorAll('.tab-btn'));
+      const foundBtn = btns.find(b => b.getAttribute('onclick')?.includes(tabId));
+      if (foundBtn) foundBtn.classList.add('active');
+
+      if (tabId === 'park') updateSuggestedSlot();
+      if (tabId === 'exit') syncExitDropdown();
+      renderAll();
+    }
+
+    // Render Matrix & Counts
+    function renderAll() {
+      const bikeContainer = document.getElementById('gridBikes');
+      const carContainer = document.getElementById('gridCars');
+      const truckContainer = document.getElementById('gridTrucks');
+
+      bikeContainer.innerHTML = '';
+      carContainer.innerHTML = '';
+      truckContainer.innerHTML = '';
+
+      let occCount = 0;
+      let bikeAvail = 0;
+      let carAvail = 0;
+      let truckAvail = 0;
+
+      slots.forEach(slot => {
+        if (slot.occupied) occCount++;
+        else {
+          if (slot.type === 'BIKE') bikeAvail++;
+          if (slot.type === 'CAR') carAvail++;
+          if (slot.type === 'TRUCK') truckAvail++;
+        }
+
+        const box = document.createElement('div');
+        box.className = `slot-box ${slot.occupied ? 'occupied' : 'available'}`;
+        box.innerHTML = `
+          <div class="slot-id">${slot.id}</div>
+          <div class="slot-type">${slot.type}</div>
+          <span class="slot-badge">${slot.occupied ? 'OCCUPIED' : 'AVAILABLE'}</span>
+          ${slot.occupied ? `<div class="slot-plate">${slot.plate}</div>` : ''}
+        `;
+
+        box.onclick = () => {
+          if (slot.occupied) {
+            switchTab('exit');
+            const select = document.getElementById('exitVehicleSelect');
+            select.value = slot.ticketId;
+          } else {
+            switchTab('park');
+            document.getElementById('parkType').value = slot.type;
+            updateSuggestedSlot(slot.id);
+          }
+        };
+
+        if (slot.type === 'BIKE') bikeContainer.appendChild(box);
+        else if (slot.type === 'CAR') carContainer.appendChild(box);
+        else truckContainer.appendChild(box);
       });
-      matrix.appendChild(el);
-    });
+
+      document.getElementById('statOccupied').textContent = occCount;
+      document.getElementById('statAvailable').textContent = slots.length - occCount;
+      document.getElementById('statCapacity').textContent = slots.length;
+      document.getElementById('statRevenue').textContent = `₹${totalRevenue.toFixed(2)}`;
+
+      document.getElementById('bikeAvailCount').textContent = `${bikeAvail} Available`;
+      document.getElementById('carAvailCount').textContent = `${carAvail} Available`;
+      document.getElementById('truckAvailCount').textContent = `${truckAvail} Available`;
+
+      renderHistoryTable();
+      syncExitDropdown();
+    }
+
+    // Park Vehicle Operations
+    function updateSuggestedSlot(preferredId = null) {
+      const type = document.getElementById('parkType').value;
+      const input = document.getElementById('parkSlot');
+      if (preferredId) {
+        input.value = preferredId;
+        return;
+      }
+      const available = slots.find(s => s.type === type && !s.occupied);
+      input.value = available ? available.id : 'FULL - NO SLOTS';
+    }
+
+    function handleParkVehicle(e) {
+      e.preventDefault();
+      const rawPlate = document.getElementById('parkPlate').value.trim().toUpperCase();
+      const type = document.getElementById('parkType').value;
+      const slotId = document.getElementById('parkSlot').value;
+
+      if (!rawPlate) {
+        alert('Please enter a valid vehicle license plate number.');
+        return;
+      }
+
+      // Check duplicates
+      const alreadyParked = slots.find(s => s.occupied && s.plate === rawPlate);
+      if (alreadyParked) {
+        alert(`Vehicle [${rawPlate}] is already parked in Slot ${alreadyParked.id}!`);
+        return;
+      }
+
+      const targetSlot = slots.find(s => s.id === slotId && !s.occupied);
+      if (!targetSlot) {
+        alert(`No slots available for ${type}! Parking lot is full for this vehicle category.`);
+        return;
+      }
+
+      // Generate Ticket
+      const ticketNum = 'PKF-' + Math.floor(1000 + Math.random() * 9000);
+      const timestamp = new Date().toLocaleString();
+
+      targetSlot.occupied = true;
+      targetSlot.plate = rawPlate;
+      targetSlot.ticketId = ticketNum;
+      targetSlot.inTime = timestamp;
+
+      // Add to transaction history
+      transactions.unshift({
+        ticketId: ticketNum,
+        plate: rawPlate,
+        type: type,
+        slot: targetSlot.id,
+        inTime: timestamp,
+        outTime: null,
+        duration: null,
+        fee: null,
+        status: 'PARKED'
+      });
+
+      saveData();
+      renderAll();
+
+      // Display Ticket UI
+      document.getElementById('noTicketMsg').style.display = 'none';
+      const ticketBox = document.getElementById('ticketDisplay');
+      ticketBox.style.display = 'block';
+      document.getElementById('ticketId').textContent = '#' + ticketNum;
+      document.getElementById('tPlate').textContent = rawPlate;
+      document.getElementById('tSlot').textContent = targetSlot.id;
+      document.getElementById('tType').textContent = type;
+      document.getElementById('tRate').textContent = `₹${RATES[type]}.00 / hr`;
+      document.getElementById('tTime').textContent = timestamp;
+
+      document.getElementById('parkPlate').value = '';
+      updateSuggestedSlot();
+      showToast(`Vehicle [${rawPlate}] parked in ${targetSlot.id}. Ticket issued!`);
+    }
+
+    // Exit & Billing Operations
+    function syncExitDropdown() {
+      const select = document.getElementById('exitVehicleSelect');
+      const currentVal = select.value;
+      select.innerHTML = '<option value="">-- Choose Parked Vehicle --</option>';
+
+      slots.filter(s => s.occupied).forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.ticketId;
+        opt.textContent = `${s.plate} (${s.id} - ${s.type}) [Ticket: ${s.ticketId}]`;
+        select.appendChild(opt);
+      });
+
+      if (currentVal) select.value = currentVal;
+    }
+
+    function syncExitForm() {
+      // Auto focus duration
+      document.getElementById('exitDuration').focus();
+    }
+
+    function handleExitVehicle(e) {
+      e.preventDefault();
+      const ticketId = document.getElementById('exitVehicleSelect').value;
+      if (!ticketId) {
+        alert('Please choose an active parked vehicle to process exit.');
+        return;
+      }
+
+      const slot = slots.find(s => s.ticketId === ticketId);
+      if (!slot) {
+        alert('Ticket not found or vehicle already checked out.');
+        return;
+      }
+
+      const hours = parseInt(document.getElementById('exitDuration').value, 10);
+      const hourlyRate = RATES[slot.type];
+      const rawFee = hours * hourlyRate;
+      const netFee = Math.min(rawFee, DAILY_CAP);
+      const isCapped = rawFee > DAILY_CAP;
+
+      const outTimestamp = new Date().toLocaleString();
+
+      // Free Slot
+      const parkedPlate = slot.plate;
+      const slotId = slot.id;
+      const vehicleType = slot.type;
+
+      slot.occupied = false;
+      slot.plate = null;
+      slot.ticketId = null;
+      const inTimestamp = slot.inTime;
+      slot.inTime = null;
+
+      // Update Transaction
+      const tx = transactions.find(t => t.ticketId === ticketId);
+      if (tx) {
+        tx.outTime = outTimestamp;
+        tx.duration = `${hours} hr(s)`;
+        tx.fee = `₹${netFee.toFixed(2)}`;
+        tx.status = 'COMPLETED';
+      }
+
+      totalRevenue += netFee;
+      saveData();
+      renderAll();
+
+      // Show Receipt Modal
+      document.getElementById('rInvoice').textContent = 'INV-2026-' + Math.floor(100 + Math.random() * 900);
+      document.getElementById('rPlate').textContent = parkedPlate;
+      document.getElementById('rType').textContent = vehicleType;
+      document.getElementById('rSlot').textContent = slotId;
+      document.getElementById('rEntry').textContent = inTimestamp || 'Recorded';
+      document.getElementById('rExit').textContent = outTimestamp;
+      document.getElementById('rDuration').textContent = `${hours} Hour(s)`;
+      document.getElementById('rRaw').textContent = `₹${rawFee.toFixed(2)}`;
+      document.getElementById('rTotal').textContent = `₹${netFee.toFixed(2)}`;
+      document.getElementById('receiptCapAlert').style.display = isCapped ? 'block' : 'none';
+
+      document.getElementById('receiptModal').classList.add('active');
+      showToast(`Vehicle [${parkedPlate}] checked out! Fee collected: ₹${netFee.toFixed(2)}`);
+    }
+
+    function closeReceiptModal() {
+      document.getElementById('receiptModal').classList.remove('active');
+    }
+
+    function printReceipt() {
+      window.print();
+    }
+
+    function quickParkModal() {
+      switchTab('park');
+    }
+
+    // Render History Table
+    function renderHistoryTable() {
+      const tbody = document.getElementById('historyTableBody');
+      const filter = document.getElementById('historyFilter')?.value.toLowerCase() || '';
+      tbody.innerHTML = '';
+
+      const filtered = transactions.filter(t => {
+        return t.plate.toLowerCase().includes(filter) ||
+               t.slot.toLowerCase().includes(filter) ||
+               t.ticketId.toLowerCase().includes(filter) ||
+               t.status.toLowerCase().includes(filter);
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:2rem;">No matching transaction records found.</td></tr>`;
+        return;
+      }
+
+      filtered.forEach(tx => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="mono-cell" style="color:var(--accent-cyan); font-weight:700;">${tx.ticketId}</td>
+          <td class="mono-cell" style="font-weight:700;">${tx.plate}</td>
+          <td><span class="badge">${tx.type}</span></td>
+          <td class="mono-cell" style="font-weight:700;">${tx.slot}</td>
+          <td style="font-size:0.78rem; color:var(--text-muted);">${tx.inTime || '-'}</td>
+          <td style="font-size:0.78rem; color:var(--text-muted);">${tx.outTime || '—'}</td>
+          <td class="mono-cell">${tx.duration || 'Active'}</td>
+          <td class="mono-cell" style="font-weight:700; color:${tx.fee ? 'var(--accent-green)' : 'var(--text-muted)'};">${tx.fee || 'Pending'}</td>
+          <td>
+            <span class="status-pill ${tx.status === 'PARKED' ? 'parked' : 'completed'}">
+              ${tx.status === 'PARKED' ? '● PARKED' : '✓ COMPLETED'}
+            </span>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    // Startup
+    initData();
+    renderAll();
   </script>
 </body>
 </html>
